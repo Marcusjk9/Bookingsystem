@@ -1,0 +1,197 @@
+As a user, I want to be able to book a trip when I've found a trip that matches my requirements
+to be able to go on my vacation. 
+
+As a user, I want to be notified to that my trip has been booked
+so I can ensure my trip has been accepted
+
+As a user, I want to be able to view my previous bookings
+so I can get an overview of previous trips
+
+As a visitor, I want to be able to register
+so I can book trips 
+
+As a visitor, I want to know that the trips presented in my search is available
+so I can know which trips are available to book
+
+As a visitor, I want to be able to specifiy travel country
+so I can visit a country of choice in my travel
+
+As a visitor, I want to be able to specifiy travel region
+so I can visit a region of choice in my travel
+
+As a visitor, I want to be able to specifiy travel city
+so I can visit a city of choice in my travel
+
+As a visitor, I want to be able to specifiy a theme for my trip
+so I can choose the travel experience 
+
+As a user, I want to be able to delete my account
+so I can choose not to have my information stored with the travel site
+
+As a visitor, I want to be able to reset my password if I have an account
+so I can set a new password if I forget
+
+As a user, I want to be able to cancel my trip
+so that I don't have to pay for my trip if I'm not able to go
+
+As a user, I want to be able to view my previous searches
+so I don't have to redo a search if I want to look at available travel options again
+
+As a visitor, I want to be able to change language of the website
+so I can search travel options in my native language
+
+As a visitor, I want to be able to set criterias for the hotels presented to me
+so I can book a hotel that meets my requirements
+
+As a visitor, I want to be able to set max total price for my trip
+so I can ensure I view trips that are within my budget
+
+As a visitor, I want to be able to see the cost of my suggested trips
+so I can be sure of how much I will have to pay
+
+As a user, I want to be able to specify details for my co Travelers in a booking
+so I can book the trip everyone Im traveling with
+
+As a visitor, I want to be able to view the most popular trips based on activity
+so I can choose trips just based on the activity, not location
+
+As a visitor, I want to be able to set travel dates for my trip
+so I can choose a trip that matches my schedule
+
+As a user, I want to be able to get travel suggestions based on my previous trips
+so I can book a trip that 
+
+As an admin, with sufficent privileges, I want to be able to add Another admin
+so I can add a new employee
+
+As an admin, with sufficent privileges, I want to be able to add a new hotell
+so we can provide bookings for new hotels
+
+As an admin, with sufficent privileges, I want to be able to add a new activity for trips
+so we can provice new themes for trips
+
+As an admin, with sufficent privileges, I want to be able to blacklist a user
+so we can prevent troublesome clients to cause further issues
+
+As an admin, with sufficent privileges, I want to be able to view a log of user activity
+so we can determine what a user did at a specific time or event
+
+As an admin, with sufficent privileges, I want to be able to view a log of site traffic
+so we can determine user behaviour and origin
+
+As an admin, with sufficent privileges, I want to be able to remove a travel location
+in case we're not able to/dont want to book travels to that location
+
+As a support personel, I want to be able to view bookings based on search critera
+so I can provide assistance to a customer that Contacts us
+
+As a support presonel, I want to be able to view/open a support ticket
+so I can assist the next costumer that has submitted a support ticket
+
+As a user I want to be able to submit a support ticket
+so I can get help if I require assistance with my booked trip
+
+As a visitor, I want to be able to view Contact information
+so I can Contact the Company
+
+As a visitor
+
+As a visitor i want to be able to visit your homepage and read about your Company.
+
+As a visitor, I want to browse travel packages by theme (food, culture, sports, nightlife, nature) and region so that I can find experiences that match my specific interests and travel style with no need to register.
+
+As a visitor, I want to view detailed information about a specific package including itinerary, price, included activities, accommodations, and reviews so that I can evaluate if it matches my interests without logging in.
+
+
+As a user(registered)
+
+As a registered user, I want to book a travel package for multiple travelers with specified dates and preferences (food, culture, sports, nightlife) so that I can secure my desired experience and receive confirmation.
+
+As a registered user i want o be able to finns a information about hotel position and see distance to important places that i would like to visit. 
+
+As a registered user, I want to filter accommodations by simple preferences (WiFi, breakfast included, parking, pet-friendly) so that I can quickly find places that meet my basic needs.
+
+As a registered user i want to be able to see sorting my results in that way that i see first results för packages that match my search criteria, and after this those who closely match my search criteria.
+
+As a registered user i want be able to reserv hotels ith extra rooms to my grupp stay together during the trip. 
+
+As a registered user, I want to see when a hotel is fully booked and get suggestions for similar hotels nearby so that I can still find a place to stay
+As a Admin
+
+As a admin i want have paosibillity to see bookings in one list and also with details when i click on one booking.
+
+As an admin, I want to see all users, bookings, hotels, and travel packages in lists and details so that I can manage everything in the system.
+
+As an admin, I want to add new hotels and edit hotel information (name, location, rooms, features) so that I can keep the hotel list updated.
+
+As an admin, I want to change room availability and mark hotels as fully booked so that customers only see correct information.
+
+As a admin i want to have posibility to view accomodaton change actovities, times, places, price in order to users get upadated informations as possible about most imaportant details.
+
+as a user 
+given that im on my profile 
+im able to see my current bookings 
+when i press on “my bookings” 
+ 
+as a user 
+given that im on my profile 
+when i press history 
+im able to see my old bookings  
+and my canceled bookings 
+ 
+as a user 
+given that im on my profile 
+and ive pressed the “change password” button 
+im able to change my password 
+ 
+as a user 
+given that im changing my password 
+ill have to put in my old password once 
+and my new password twice 
+ 
+as a user 
+given that ive put in the same new password twice 
+and my old password 
+when i press the “change password” button 
+then my new password is set 
+ 
+as a user 
+given that ive booked 
+and the end_date has past 
+then im able to rate my stay from 1-5 
+and leave a comment 
+ 
+as a user 
+given that ive booked 
+and everything went through 
+then I will get an email as confirmation 
+ 
+as a user 
+given that ive pressed a hotel to look on 
+then i will get the specifics about that hotel 
+and if any room is available on the date i picked 
+ 
+as a user 
+given that ive added the filters suiting me 
+then i will be shown a list of hotels/activities suited to my demands 
+as a user 
+given ive sorted my search after price asc 
+Then i will get the list sorted by price asc 
+ 
+as a user 
+given ive sorted my search after price desc 
+Then i will get the list sorted by price desc 
+ 
+as a user 
+given ive sorted my search alphabetically 
+Then i will get the list sorted alphabetically 
+given ive sorted my search alphabetically desc 
+Then i will get the list sorted alphabetically desc 
+ 
+as a user 
+given ive sorted my search by highest rating 
+Then i will get the list sorted by highest rating 
+ 
+as a user 
+given ive sorted my search by distance to centrum 
+Then i will get the list sorted by shortest distance to centrum in meters 
