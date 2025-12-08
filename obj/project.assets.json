@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\lukas\\.nuget\\packages\\": {}
+    "C:\\Users\\piray\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lukas\\projekt\\bookingsystem\\Bookingsystem.csproj",
+      "projectUniqueName": "C:\\Users\\piray\\repos\\Bookingsystem\\Bookingsystem.csproj",
       "projectName": "Bookingsystem",
-      "projectPath": "C:\\Users\\lukas\\projekt\\bookingsystem\\Bookingsystem.csproj",
-      "packagesPath": "C:\\Users\\lukas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lukas\\projekt\\bookingsystem\\obj\\",
+      "projectPath": "C:\\Users\\piray\\repos\\Bookingsystem\\Bookingsystem.csproj",
+      "packagesPath": "C:\\Users\\piray\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\piray\\repos\\Bookingsystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\lukas\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\piray\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -67,7 +67,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.319/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
