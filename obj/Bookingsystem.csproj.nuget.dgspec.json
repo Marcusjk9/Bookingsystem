@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\piray\\repos\\Bookingsystem\\Bookingsystem.csproj": {}
+    "C:\\Users\\david\\repos\\Bookingsystem\\Bookingsystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\piray\\repos\\Bookingsystem\\Bookingsystem.csproj": {
+    "C:\\Users\\david\\repos\\Bookingsystem\\Bookingsystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\piray\\repos\\Bookingsystem\\Bookingsystem.csproj",
+        "projectUniqueName": "C:\\Users\\david\\repos\\Bookingsystem\\Bookingsystem.csproj",
         "projectName": "Bookingsystem",
-        "projectPath": "C:\\Users\\piray\\repos\\Bookingsystem\\Bookingsystem.csproj",
-        "packagesPath": "C:\\Users\\piray\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\piray\\repos\\Bookingsystem\\obj\\",
+        "projectPath": "C:\\Users\\david\\repos\\Bookingsystem\\Bookingsystem.csproj",
+        "packagesPath": "C:\\Users\\david\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\david\\repos\\Bookingsystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\piray\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\david\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -42,6 +42,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[9.5.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -61,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.319/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
