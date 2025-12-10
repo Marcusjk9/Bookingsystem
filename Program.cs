@@ -32,18 +32,59 @@ async Task db_reset_to_default(Config config)
     CREATE TABLE users
     (
               id INTEGER PRIMARY KEY AUTO_INCREMENT,
-              firstname CHAR(50) NOT NULL, 
-              lastname CHAR(100) NOT NULL,
+              firstname VARCHAR(50) NOT NULL, 
+              lastname VARCHAR(100) NOT NULL,
               password VARCHAR(128),
-              Email CHAR(254) UNIQUE NOT NULL,
+              email VARCHAR(254) UNIQUE NOT NULL,
               phone VARCHAR(50),
               nationalidnumber VARCHAR(16) UNIQUE NOT NULL,
               street VARCHAR(50),
               streetnumber VARCHAR(16),
-              region CHAR(50),
               city INTEGER,
               country INTEGER,
               status ENUM('active', 'inactive', 'pending') DEFAULT 'active',
+              FOREIGN KEY (city) REFERENCES cities(id),
+              FOREIGN KEY (country) REFERENCES countries(id)
+              
+    );
+
+     CREATE TABLE admins
+    (
+              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+              firstname VARCHAR(50) NOT NULL, 
+              lastname VARCHAR(100) NOT NULL,
+              password VARCHAR(128),
+              role ENUM('god', 'mid', 'base'),
+              status ENUM('active', 'inactive', 'pending') DEFAULT 'active',
+              office ENUM('halmstad', 'stockholm', 'berlin', 'london') DEFAULT 'halmstad',
+              email VARCHAR(254) UNIQUE NOT NULL,
+              phone VARCHAR(50),
+              nationalidnumber VARCHAR(16) UNIQUE NOT NULL,
+              street VARCHAR(50),
+              streetnumber VARCHAR(16),
+              city INTEGER,
+              country INTEGER,
+              FOREIGN KEY (city) REFERENCES cities(id),
+              FOREIGN KEY (country) REFERENCES countries(id)
+              
+    );
+
+    CREATE TABLE employees
+    (
+              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+              firstname VARCHAR(50) NOT NULL, 
+              lastname VARCHAR(100) NOT NULL,
+              password VARCHAR(128),
+              role ENUM('support', 'manager', 'administrator', 'tech'),
+              status ENUM('active', 'inactive', 'pending') DEFAULT 'active',
+              office ENUM('halmstad', 'stockholm', 'berlin', 'london') DEFAULT 'halmstad',
+              email VARCHAR(254) UNIQUE NOT NULL,
+              phone VARCHAR(50),
+              nationalidnumber VARCHAR(16) UNIQUE NOT NULL,
+              street VARCHAR(50),
+              streetnumber VARCHAR(16),
+              city INTEGER,
+              country INTEGER,
               FOREIGN KEY (city) REFERENCES cities(id),
               FOREIGN KEY (country) REFERENCES countries(id)
               
