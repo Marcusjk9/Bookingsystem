@@ -15,12 +15,38 @@ app.Run();
 async Task db_reset_to_default(Config config)
 {
   string query_create_users_table = """
+    CREATE TABLE countries
+    (
+              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+              name VARCHAR(255) 
+    );
+
+    CREATE TABLE cities
+    (
+              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+              country INTEGER,
+              name VARCHAR(255),
+              FOREIGN KEY (country) REFERENCES countries(id)
+    );
+
     CREATE TABLE users
     (
-              id INT PRIMARY KEY AUTO_INCREMENT,
-              name VARCHAR(255),
-              email VARCHAR(254) NOT NULL UNIQUE,
-              password VARCHAR(128) 
+              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+              firstname CHAR(50) NOT NULL, 
+              lastname CHAR(100) NOT NULL,
+              password VARCHAR(128),
+              Email CHAR(254) UNIQUE NOT NULL,
+              phone VARCHAR(50),
+              nationalidnumber VARCHAR(16) UNIQUE NOT NULL,
+              street VARCHAR(50),
+              streetnumber VARCHAR(16),
+              region CHAR(50),
+              city INTEGER,
+              country INTEGER,
+              status ENUM('active', 'inactive', 'pending') DEFAULT 'active',
+              FOREIGN KEY (city) REFERENCES cities(id),
+              FOREIGN KEY (country) REFERENCES countries(id)
+              
     )
   """;
 
