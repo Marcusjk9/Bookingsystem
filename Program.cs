@@ -4,18 +4,31 @@ using server;
 var builder = WebApplication.CreateBuilder(args);
 
 Config config = new("server=127.0.0.1;uid=travel;pwd=travel;database=travel;");
+
 builder.Services.AddSingleton(config);
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => 
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
 var app = builder.Build();
+
+app.UseSession();
 
 app.MapGet("/", () => "Hello World!");
 app.MapDelete("/db", db_reset_to_default);
+app.MapPost("/login", Login.Post);
+app.MapDelete("/login", Login.Delete);
+app.MapGet("/employees", Employees.Get);
+app.MapPost("/employees", Employees.Post);
 
 app.Run();
 
 async Task db_reset_to_default(Config config)
 {
   string query_create_users_table = """
-    CREATE TABLE countries
+   CREATE TABLE countries
     (
               id INTEGER PRIMARY KEY AUTO_INCREMENT,
               name VARCHAR(255) 
