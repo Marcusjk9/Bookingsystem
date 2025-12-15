@@ -1,8 +1,33 @@
+using Microsoft.VisualBasic;
+using Org.BouncyCastle.Tls;
+
+
 namespace server;
+
+
 
 
 static class Users
 {
+
+
+  public record post_Args(
+  int id,
+  string firstname,
+  string lastname,
+  string password,
+  string email,
+  string? phone,
+  string nationalidnumber,
+  string street,
+  string streetnumber,
+  string region,
+  int city,
+  int country,
+  string status
+  );
+
+
   public record Get_Data(
       int id,
       string firstname,
@@ -19,23 +44,62 @@ static class Users
       string status
       );
 
+
+  public static async Task Post(post_Args usr, Config config)
+  {
+    string query = """
+        INSERT INTO users
+        (id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city, country, status)
+        VALUES
+        (@id, @firstname, @lastname, @password, @email, @phone, @nationalidnumber, @street, @streetnumber, @region, @city, @country, @status)
+        """;
+
+
+    var parameters = new MySqlParameter[]
+    {
+    new("@firstname", usr.firstname),
+    new("@lastname", usr.lastname),
+    new("@password", usr.password),
+    new("@email", usr.email),
+    new("@phone", usr.phone),
+    new("@nationalidnumber", usr.nationalidnumber),
+    new("@street", usr.street),
+    new("@streetnumber", usr.streetnumber),
+    new("@region", usr.region),
+    new("@city", usr.city),
+    new("@country", usr.country),
+    new("@status", usr.status)
+    };
+
+
+    await MySqlHelper.ExecuteNonQueryAsync(config.db, query, parameters);
+  }
+
+
+
+
   public static async Task<Get_Data?>
   Get(Config config, HttpContext ctx)
   {
     Get_Data? result = null;
 
 
+
+
     if (ctx.Session.IsAvailable && ctx.Session.GetInt32("user_id") is int user_id)
     {
       string query = @"
-            SELECT id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city country, status
+            SELECT id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city, country, status
             FROM users
             WHERE id = @id";
+
 
       var parameters = new MySqlParameter[]
       {
                 new("@id", user_id)
       };
+
+
 
 
       using (var reader = await MySqlHelper.ExecuteReaderAsync(config.db, query, parameters))
@@ -57,14 +121,20 @@ static class Users
               reader.GetInt32(11),    // country
               reader.GetString(12)    // status
 
+
           );
         }
       }
     }
 
+
     return result;
   }
 }
+
+
+
+
 
 
 
@@ -88,6 +158,16 @@ static class Users
               FOREIGN KEY (city) REFERENCES cities(id),
               FOREIGN KEY (country) REFERENCES countries(id)
               */
+
+
+
+
+
+
+
+
+
+
 
 
 
