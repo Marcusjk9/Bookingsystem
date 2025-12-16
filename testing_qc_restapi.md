@@ -1,6 +1,18 @@
 ### Postman testing mothods ###
 
-# USERS:
+# Skapa Databas & Tabeller:
+För att skapa databas använder vi MySQL Workbench, för tabeller i postman DELETE /db   // rensar tabeller
+
+
+# Admins
+POST/admin // skapa admin, plus att alla uppgifter ska fyllas i body rutan
+POST/admin/login  // loga in admin, email & password i body
+GET/admin/users // testa admins behörighet att lista ut alla users
+GET/admin/emplyees // **OBS**testa admins behörighet att lista ut alla anställda OBS***FUNKAR EJ*** MÅSTE KOLLA UPP
+
+
+
+# users:
 POST/login // testa user login
 DELETE/login // testa user logga ut
 
@@ -10,14 +22,14 @@ DELETE/login // testa user logga ut
 
 
 # Employees:
-POST/employees // skapa nytt employee
-POST/employees/login // testa employees login
-DELETE/employees/login //logga ut employee
+POST/employees // skapa nytt employee, plus alla uppgifter ska fyllas i body rutan
+POST/login/employee // testa employees login
+DELETE/login/employee  //logga ut employee
 GET/employees // visa lista med employees i databasen
 
 
 
-# Admins
+
 
 
 

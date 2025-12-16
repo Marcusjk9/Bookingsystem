@@ -28,11 +28,36 @@ app.MapPost("/login", Login.Post);
 app.MapDelete("/login", Login.Delete);
 app.MapGet("/employees", Employees.Get);
 app.MapPost("/employees", Employees.Post);
-app.MapPost("/employees/login", EmployeesLogin.Post);
-app.MapDelete("/employees/login", EmployeesLogin.Delete);
-app.MapPost("/admin", Admin.Post);
+// app.MapPost("/employees/login", EmployeesLogin.Post);
+// app.MapDelete("/employees/login", EmployeesLogin.Delete);
+app.MapPost("/login/employee", Login.PostEmployee);
+app.MapDelete("/login/employee", Login.Delete);
 app.MapGet("/users", Users.Get);
 app.MapPost("/users", Users.Post);
+app.MapPost("/admin", Admin.Post);
+app.MapPost("/login/admin", Login.PostAdmin);
+
+app.MapGet("/admin/users", async (Config config, HttpContext ctx) =>
+
+{
+    if (!await Admin.HasPermission(ctx, config, AdminPermission.ViewAllData))
+        return Results.Unauthorized();
+    
+    List<dynamic> users = new();
+    using var reader = await MySqlHelper.ExecuteReaderAsync(config.db, "SELECT id, firstname, lastname, email FROM users");
+    while (await reader.ReadAsync())
+    {
+        users.Add(new 
+        { 
+            id = reader.GetInt32(0),
+            firstname = reader.GetString(1),
+            lastname = reader.GetString(2),
+            email = reader.GetString(3)
+        });
+    }
+    
+    return Results.Ok(users);
+});
 app.MapPost("/hotels/search", async (Config config, hotel_search_params p) =>
 {
   var sql = """
