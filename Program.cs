@@ -26,6 +26,7 @@ app.MapDelete("/db", db_reset_to_default);
 app.MapPut("/db", populate_test_data);
 app.MapPost("/login", Login.Post);
 app.MapDelete("/login", Login.Delete);
+app.MapPost("/profile", Profile.Post);
 app.MapGet("/employees", Employees.Get);
 app.MapPost("/employees", Employees.Post);
 // app.MapPost("/employees/login", EmployeesLogin.Post);
