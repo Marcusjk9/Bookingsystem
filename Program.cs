@@ -2,10 +2,16 @@ global using MySql.Data.MySqlClient;
 using server;
 
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 
+
+
 Config config = new("server=127.0.0.1;uid=travel;pwd=travel;database=travel;");
+
+
 
 
 builder.Services.AddSingleton(config);
@@ -18,7 +24,11 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 
+
+
 app.UseSession();
+
+
 
 
 app.MapGet("/", () => "Hello World!");
@@ -38,103 +48,121 @@ app.MapPost("/users", Users.Post);
 app.MapPost("/admin", Admin.Post);
 app.MapPost("/login/admin", Login.PostAdmin);
 
+
 app.MapGet("/admin/users", async (Config config, HttpContext ctx) =>
 
+
 {
-    if (!await Admin.HasPermission(ctx, config, AdminPermission.ViewAllData))
-        return Results.Unauthorized();
-    
-    List<dynamic> users = new();
-    using var reader = await MySqlHelper.ExecuteReaderAsync(config.db, "SELECT id, firstname, lastname, email FROM users");
-    while (await reader.ReadAsync())
+  if (!await Admin.HasPermission(ctx, config, AdminPermission.ViewAllData))
+    return Results.Unauthorized();
+
+  List<dynamic> users = new();
+  using var reader = await MySqlHelper.ExecuteReaderAsync(config.db, "SELECT id, firstname, lastname, email FROM users");
+  while (await reader.ReadAsync())
+  {
+    users.Add(new
     {
-        users.Add(new 
-        { 
-            id = reader.GetInt32(0),
-            firstname = reader.GetString(1),
-            lastname = reader.GetString(2),
-            email = reader.GetString(3)
-        });
-    }
-    
-    return Results.Ok(users);
+      id = reader.GetInt32(0),
+      firstname = reader.GetString(1),
+      lastname = reader.GetString(2),
+      email = reader.GetString(3)
+    });
+  }
+
+  return Results.Ok(users);
 });
 app.MapPost("/hotels/search", async (Config config, hotel_search_params p) =>
 {
+  //The base of the sql query to use for filter/search
   var sql = """
-    SELECT DISTINCT
-    h.id, h.name, h.description, c.name AS city, co.name AS country, h.distancetocitycenter
-      FROM hotels h
-      JOIN cities c ON h.city = c.id
-      JOIN countries co ON h.country = co.id
-      LEFT JOIN convenience cv ON cv.hotel = h.id
+    SELECT
+      h.id, h.name, h.description, c.name AS city, co.name AS country, h.distancetocitycenter, r.id AS room_id, r.priceperday AS price_per_day
+    FROM hotels h
+    JOIN cities c ON h.city = c.id
+    JOIN countries co ON h.country = co.id
+    JOIN rooms r ON r.hotel = h.id
       WHERE 1=1
     """;
+  //WHERE 1=1 means "true", and is written so that we dont  need to write a bool in our code
 
 
-  var parameters = new List<MySqlParameter>();
+  var parameters = new List<MySqlParameter>();  //List holding SQL parameters
 
 
-  if (!string.IsNullOrEmpty(p.name))
+
+
+  if (!string.IsNullOrEmpty(p.name))    //Filters for names. IsNullOrEmpty is to avoid matching everything with LIKE
   {
     sql += " AND h.name LIKE @name";
     parameters.Add(new MySqlParameter("@name", $"%{p.name}%"));
   }
 
-  if (!string.IsNullOrEmpty(p.city))
+
+  if (!string.IsNullOrEmpty(p.city))    //Filters for cities
   {
     sql += " AND c.name = @city";
     parameters.Add(new MySqlParameter("@city", p.city));
   }
 
-  if (p.country.HasValue)
+
+  if (p.country.HasValue)   //Filters for country but scountries are int in our program therefore the diffrence
   {
     sql += " AND h.country = @country";
     parameters.Add(new MySqlParameter("@country", p.country.Value));
   }
 
 
-  if (p.min_price.HasValue)
+
+
+  if (p.min_price.HasValue)   //Filters by minimum price
   {
-    sql += " AND EXISTS (SELECT 1 FROM rooms r WHERE r.hotel = h.id AND r.priceperday >= @min_price)";
+    sql += " AND r.priceperday >= @min_price";
     parameters.Add(new MySqlParameter("@min_price", p.min_price.Value));
   }
 
 
-  if (p.max_price.HasValue)
+
+
+  if (p.max_price.HasValue)    //Filters by maximum price
   {
-    sql += " AND EXISTS (SELECT 1 FROM rooms r WHERE r.hotel = h.id AND r.priceperday <= @max_price)";
+    sql += " AND r.priceperday <= @max_price";
     parameters.Add(new MySqlParameter("@max_price", p.max_price.Value));
   }
 
 
-  if (p.conveniences != null && p.conveniences.Count > 0)
+
+  if (p.conveniences != null && p.conveniences.Count > 0)   // make sure the hotel has convieniences. And the exist makes sure the hotel has all od the convieneces asked for
   {
-    sql += " AND h.id IN (SELECT hotel FROM convenience WHERE type IN ("
-        + string.Join(',', p.conveniences.Select((c, i) => $"@conv{i}"))
-        + "))";
-
-
     for (int i = 0; i < p.conveniences.Count; i++)
+    {
+      sql += $"""
+      AND EXISTS (SELECT 1 FROM convenience cv WHERE cv.hotel = h.id AND cv.type = @conv{i})
+    """;
       parameters.Add(new MySqlParameter($"@conv{i}", p.conveniences[i].ToString()));
+    }
   }
 
-  if (p.activities != null && p.activities.Count > 0)
+
+  if (p.activities != null)   // same as the convinence code
   {
-    sql += " AND h.id IN (SELECT hotel FROM activitiesdestinations ad JOIN activities a ON ad.activity = a.id WHERE a.type IN ("
-        + string.Join(',', p.activities.Select((a, i) => $"@act{i}"))
-        + "))";
-
-
-
     for (int i = 0; i < p.activities.Count; i++)
+    {
+      sql += $"""
+        AND EXISTS (SELECT 1 FROM activitiesdestinations ad JOIN activities a ON ad.activity = a.id
+            WHERE ad.hotel = h.id AND a.type = @act{i})
+    """;
       parameters.Add(new MySqlParameter($"@act{i}", p.activities[i].ToString()));
+    }
   }
 
 
-  sql += " LIMIT @offset, @pagesize";
-  parameters.Add(new MySqlParameter("@offset", ((p.page ?? 1) - 1) * (p.page_size ?? 10)));
-  parameters.Add(new MySqlParameter("@pagesize", p.page_size ?? 10));
+
+
+  sql += " LIMIT @offset, @pagesize";   //LIMIT to skip so you start on page 1
+  parameters.Add(new MySqlParameter("@offset", ((p.page ?? 1) - 1) * (p.page_size ?? 10))); // Offset is a rowskip
+  parameters.Add(new MySqlParameter("@pagesize", p.page_size ?? 10)); //limit the page to 10 rows
+
+
 
 
   var results = new List<object>();
@@ -145,6 +173,8 @@ app.MapPost("/hotels/search", async (Config config, hotel_search_params p) =>
     {
       id = reader.GetInt32("id"),
       name = reader.GetString("name"),
+      room_id = reader.GetInt32("room_id"),
+      price_per_day = reader.GetDecimal("price_per_day"),
       description = reader.GetString("description"),
       city = reader.GetString("city"),
       country = reader.GetString("country"),
@@ -586,6 +616,3 @@ CREATE USER travel@localhost identified by 'travel';
 GRANT ALL PRIVILEGES ON travel.* TO 'travel'@'localhost';
 --------------------
 */
-
-
-
