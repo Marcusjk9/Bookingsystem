@@ -223,3 +223,38 @@ static class Booking
     else { return bookings; }
   }
 }
+
+
+static class AddBooking
+{
+  public record Post_Args(int? Room, string? Checkin, string? Checkout, int? Price, string? Message);
+  public static async Task Post(Post_Args book, Config config, HttpContext ctx)
+  {
+
+    if (ctx.Session.IsAvailable)
+    {
+      if (ctx.Session.Keys.Contains("user_id"))
+      {
+        string query = """
+        INSERT INTO bookings 
+        (user, room, checkin, checkout, price, message)
+        VALUES
+        (@id, @room, @checkin, @checkout, @price, @message)
+        """;
+
+        var parameters = new MySqlParameter[]
+        {
+                    new("@id", ctx.Session.GetInt32("user_id")),
+                    new("@room", book.Room),
+                    new("@checkin", book.Checkin),
+                    new("@checkout", book.Checkout),
+                    new("@price", book.Price),
+                    new("@message", book.Message)
+
+        };
+
+        await MySqlHelper.ExecuteNonQueryAsync(config.db, query, parameters);
+      }
+    }
+  }
+}
