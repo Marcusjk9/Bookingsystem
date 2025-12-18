@@ -28,8 +28,7 @@ app.MapPost("/login", Login.Post);
 app.MapDelete("/login", Login.Delete);
 app.MapGet("/employees", Employees.Get);
 app.MapPost("/employees", Employees.Post);
-// app.MapPost("/employees/login", EmployeesLogin.Post);
-// app.MapDelete("/employees/login", EmployeesLogin.Delete);
+
 app.MapPost("/login/employee", Login.PostEmployee);
 app.MapDelete("/login/employee", Login.Delete);
 app.MapGet("/users", Users.Get);

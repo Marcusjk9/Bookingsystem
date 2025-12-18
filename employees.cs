@@ -57,31 +57,36 @@ static class Employees
         await MySqlHelper.ExecuteNonQueryAsync(config.db, query, parameters);
     }
 
-    public static async Task<List<Get_Data>> Get(Config config)
+    public static async Task<List<Get_Data>?> Get(Config config, HttpContext ctx)
     {
-        List<Get_Data> result = new();
+    List<Get_Data>? result = null;
+
+    // Samma metodik som Users.Get, fast employee_id istället för user_id
+    if (ctx.Session.IsAvailable && ctx.Session.GetInt32("employee_id") is int employee_id)
+    {
+        result = new List<Get_Data>();
 
         string query = """
-            SELECT id, firstname, lastname, role, status, office, email
-            FROM employees
+        SELECT id, firstname, lastname, role, status, office, email
+        FROM employees
         """;
 
         using var reader = await MySqlHelper.ExecuteReaderAsync(config.db, query);
-
-        while (reader.Read())
+        while (await reader.ReadAsync())
         {
-            result.Add(new(
-                reader.GetInt32(0),   // id
-                reader.GetString(1),  // firstname
-                reader.GetString(2),  // lastname
-                reader.GetString(3),  // role
-                reader.GetString(4),  // status
-                reader.GetString(5),  // office
-                reader.GetString(6)   // email
+            result.Add(new Get_Data(
+                reader.GetInt32(0),
+                reader.GetString(1),
+                reader.GetString(2),
+                reader.GetString(3),
+                reader.GetString(4),
+                reader.GetString(5),
+                reader.GetString(6)
             ));
         }
+    }
 
-        return result;
+    return result;
     }
 }
 
