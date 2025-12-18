@@ -21,7 +21,6 @@ static class Users
   string nationalidnumber,
   string street,
   string streetnumber,
-  string region,
   int city,
   int country,
   string status
@@ -38,7 +37,6 @@ static class Users
       string nationalidnumber,
       string street,
       string streetnumber,
-      string region,
       int city,
       int country,
       string status
@@ -49,9 +47,9 @@ static class Users
   {
     string query = """
         INSERT INTO users
-        (id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city, country, status)
+        (id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, city, country, status)
         VALUES
-        (@id, @firstname, @lastname, @password, @email, @phone, @nationalidnumber, @street, @streetnumber, @region, @city, @country, @status)
+        (@id, @firstname, @lastname, @password, @email, @phone, @nationalidnumber, @street, @streetnumber, @city, @country, @status)
         """;
 
 
@@ -65,7 +63,6 @@ static class Users
     new("@nationalidnumber", usr.nationalidnumber),
     new("@street", usr.street),
     new("@streetnumber", usr.streetnumber),
-    new("@region", usr.region),
     new("@city", usr.city),
     new("@country", usr.country),
     new("@status", usr.status)
@@ -89,7 +86,7 @@ static class Users
     if (ctx.Session.IsAvailable && ctx.Session.GetInt32("user_id") is int user_id)
     {
       string query = @"
-            SELECT id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city, country, status
+            SELECT id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, city, country, status
             FROM users
             WHERE id = @id";
 
@@ -116,10 +113,9 @@ static class Users
               reader.GetString(6),    // nationalidnumber
               reader.GetString(7),    // street
               reader.GetString(8),    // streetnumber
-              reader.GetString(9),    // region
-              reader.GetInt32(10),    // city
-              reader.GetInt32(11),    // country
-              reader.GetString(12)    // status
+              reader.GetInt32(9),     // city
+              reader.GetInt32(10),    // country
+              reader.GetString(11)    // status
 
 
           );
@@ -134,40 +130,96 @@ static class Users
 
 
 
+//Kontrollerar om user_id finns i session cookie. If exists, returnera full name, email och phonenumber. 
+static class Profile
+{
+  public record Get_Data(string? Name, string Email, String Phone);
+  public static async Task<Get_Data?> Post(Config config, HttpContext ctx)
+  {
+    Get_Data? result = null;
+
+    if (ctx.Session.IsAvailable)
+    {
+      if (ctx.Session.Keys.Contains("user_id"))
+      {
+        string query = "SELECT CONCAT(u.firstname,\" \", u.lastname), u.email, u.phone FROM users AS u WHERE u.id = @id";
+        var parameters = new MySqlParameter[]
+        {
+                    new("@id", ctx.Session.GetInt32("user_id"))
+        };
+
+        using (var reader = await MySqlHelper.ExecuteReaderAsync(config.db, query, parameters))
+        {
+          if (reader.Read())
+          {
+            if (reader[0] is string name)
+            {
+              result = new(name, reader.GetString(1), reader.GetString(2));
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+static class Booking
+{
+  public record Get_Data(int? UserId, int? BookingID, string? Name, string? Email, int? Room, DateOnly? CheckIn, DateOnly? CheckOut, decimal? Price, string? Currency, string? Status, DateOnly? Created, DateTime? Confirmed_Cancelled, string? YourMessage);
+  public static async Task<List<Get_Data?>> Post(Config config, HttpContext ctx)
+  {
+
+    var bookings = new List<Get_Data?>();
+
+    if (ctx.Session.IsAvailable)
+    {
+      if (ctx.Session.Keys.Contains("user_id"))
+      {
+        string query = """
+        SELECT CONCAT(u.firstname,"" "", u.lastname) as fullname, u.id AS user_id, u.email, b.id AS booking_id, b.room, b.checkin, b.checkout, b.price, b.currency, b.status, b.createddate, b.statuschange, b.message 
+        FROM users AS u 
+        INNER JOIN bookings AS b on b.user = u.id
+        WHERE u.id = @id
+        """;
+
+        var parameters = new MySqlParameter[]
+        {
+                    new("@id", ctx.Session.GetInt32("user_id"))
+        };
+
+        using var reader = await MySqlHelper.ExecuteReaderAsync(config.db, query, parameters);
+        {
 
 
 
+          while (reader.Read())
+          {
+            bookings.Add(new Get_Data(
 
+              UserId: reader.GetInt32("user_id"),
+              BookingID: reader.GetInt32("booking_id"),
+              Name: reader.GetString("fullname"),
+              Email: reader.GetString("email"),
+              Room: reader.GetInt32("room"),
+              CheckIn: DateOnly.FromDateTime(reader.GetDateTime("checkin")),
+              CheckOut: DateOnly.FromDateTime(reader.GetDateTime("checkout")),
+              Price: Convert.ToDecimal(reader.GetInt32("price")),
+              Currency: reader.GetString("currency"),
+              Status: reader.GetString("status"),
+              Created: DateOnly.FromDateTime(reader.GetDateTime("createddate")),
+              reader.IsDBNull(reader.GetOrdinal("statuschange"))  // Check if NULL, GetOrdinal converts column name string to int which is the only var type IsDbNull accepts
+              ? null                                           // If NULL, use null
+              : reader.GetDateTime(reader.GetOrdinal("statuschange")),
+              YourMessage: reader.GetString("message")
+            ));
+          }
+          return bookings;
+        }
 
-/*
- CREATE TABLE users
-    (
-????????????  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-              firstname CHAR(50) NOT NULL,
-              lastname CHAR(100) NOT NULL,
-              password VARCHAR(128),
-              Email CHAR(254) UNIQUE NOT NULL,
-              phone VARCHAR(50),
-              nationalidnumber VARCHAR(16) UNIQUE NOT NULL,
-              street VARCHAR(50),
-              streetnumber VARCHAR(16),
-              region CHAR(50),
-              city INTEGER,
-              country INTEGER,
-              status ENUM('active', 'inactive', 'pending') DEFAULT 'active',
-              FOREIGN KEY (city) REFERENCES cities(id),
-              FOREIGN KEY (country) REFERENCES countries(id)
-              */
-
-
-
-
-
-
-
-
-
-
-
-
-
+      }
+      else { return bookings; }
+    }
+    else { return bookings; }
+  }
+}
