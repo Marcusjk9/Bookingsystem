@@ -38,7 +38,7 @@ app.MapPost("/login", Login.Post);
 app.MapDelete("/login", Login.Delete);
 app.MapPost("/users/profiles", Profile.Post);
 app.MapPost("/users/bookings", Booking.Post);
-//app.MapPost("/users/bookings/book", AddBooking.Post);
+app.MapPost("/users/bookings/book", AddBooking.Post);
 //app.MapPost("/users/bookings/confirm", Profile.Post);
 app.MapGet("/employees", Employees.Get);
 app.MapPost("/employees", Employees.Post);
@@ -79,7 +79,7 @@ app.MapPost("/hotels/search", async (Config config, hotel_search_params p) =>
   //The base of the sql query to use for filter/search
   var sql = """
     SELECT
-      h.id, h.name, h.description, c.name AS city, co.name AS country, h.distancetocitycenter, r.id AS room_id, r.priceperday AS price_per_day
+      h.id, h.name, h.description, c.name AS city, co.name AS country, h.distancetocitycenter, r.id AS room_id, r.priceperday AS price_per_day, r.currency
     FROM hotels h
     JOIN cities c ON h.city = c.id
     JOIN countries co ON h.country = co.id
@@ -178,6 +178,7 @@ app.MapPost("/hotels/search", async (Config config, hotel_search_params p) =>
       name = reader.GetString("name"),
       room_id = reader.GetInt32("room_id"),
       price_per_day = reader.GetDecimal("price_per_day"),
+      currency = reader.GetString("currency"),
       description = reader.GetString("description"),
       city = reader.GetString("city"),
       country = reader.GetString("country"),

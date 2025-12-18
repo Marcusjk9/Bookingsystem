@@ -21,6 +21,7 @@ static class Users
   string nationalidnumber,
   string street,
   string streetnumber,
+  string region,
   int city,
   int country,
   string status
@@ -37,6 +38,7 @@ static class Users
       string nationalidnumber,
       string street,
       string streetnumber,
+      string region,
       int city,
       int country,
       string status
@@ -47,9 +49,9 @@ static class Users
   {
     string query = """
         INSERT INTO users
-        (id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, city, country, status)
+        (id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city, country, status)
         VALUES
-        (@id, @firstname, @lastname, @password, @email, @phone, @nationalidnumber, @street, @streetnumber, @city, @country, @status)
+        (@id, @firstname, @lastname, @password, @email, @phone, @nationalidnumber, @street, @streetnumber, @region, @city, @country, @status)
         """;
 
 
@@ -63,6 +65,7 @@ static class Users
     new("@nationalidnumber", usr.nationalidnumber),
     new("@street", usr.street),
     new("@streetnumber", usr.streetnumber),
+    new("@region", usr.region),
     new("@city", usr.city),
     new("@country", usr.country),
     new("@status", usr.status)
@@ -86,7 +89,7 @@ static class Users
     if (ctx.Session.IsAvailable && ctx.Session.GetInt32("user_id") is int user_id)
     {
       string query = @"
-            SELECT id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, city, country, status
+            SELECT id, firstname, lastname, password, email, phone, nationalidnumber, street, streetnumber, region, city, country, status
             FROM users
             WHERE id = @id";
 
@@ -113,9 +116,10 @@ static class Users
               reader.GetString(6),    // nationalidnumber
               reader.GetString(7),    // street
               reader.GetString(8),    // streetnumber
-              reader.GetInt32(9),     // city
-              reader.GetInt32(10),    // country
-              reader.GetString(11)    // status
+              reader.GetString(9),    // region
+              reader.GetInt32(10),    // city
+              reader.GetInt32(11),    // country
+              reader.GetString(12)    // status
 
 
           );
@@ -223,3 +227,37 @@ static class Booking
     else { return bookings; }
   }
 }
+
+static class AddBooking
+{
+  public record Post_Args(int? Room, string? Checkin, string? Checkout, int? Price, string? Message);
+  public static async Task Post(Post_Args book, Config config, HttpContext ctx)
+  {
+
+    if (ctx.Session.IsAvailable)
+    {
+      if (ctx.Session.Keys.Contains("user_id"))
+      {
+        string query = """
+        INSERT INTO bookings 
+        (user, room, checkin, checkout, price, message)
+        VALUES
+        (@id, @room, @checkin, @checkout, @price, @message)
+        """;
+
+        var parameters = new MySqlParameter[]
+        {
+                    new("@id", ctx.Session.GetInt32("user_id")),
+                    new("@room", book.Room),
+                    new("@checkin", book.Checkin),
+                    new("@checkout", book.Checkout),
+                    new("@price", book.Price),
+                    new("@message", book.Message)
+
+        };
+
+        await MySqlHelper.ExecuteNonQueryAsync(config.db, query, parameters);
+      }
+    }
+  }
+}      
