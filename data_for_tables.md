@@ -1,3 +1,5 @@
+### OBS DEPRICIETED ###
+
 ### countries
 
 INSERT INTO countries (id, name) VALUES
