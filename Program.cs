@@ -38,7 +38,8 @@ app.MapPost("/login", Login.Post);
 app.MapDelete("/login", Login.Delete);
 app.MapPost("/users/profiles", Profile.Post);
 app.MapPost("/users/bookings", Booking.Post);
-
+//app.MapPost("/users/bookings/book", AddBooking.Post);
+//app.MapPost("/users/bookings/confirm", Profile.Post);
 app.MapGet("/employees", Employees.Get);
 app.MapPost("/employees", Employees.Post);
 
